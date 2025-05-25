@@ -1,0 +1,1358 @@
+{
+  "maps": [
+    {
+      "id": "map1",
+      "name": "Edificio",
+      "description": "Edificio de 5 pisos",
+      "nodes": [
+        {
+          "id": "A1",
+          "lat": 3,
+          "lon": 0,
+          "alt": 0,
+          "connections": [
+            {
+              "to": "A2",
+              "distance": 15
+            }
+          ],
+          "number": 1,
+          "floor": "A",
+          "type": "Salida",
+          "risk_block_a": 0,
+          "risk_block_b": 0
+        },
+        {
+          "id": "A2",
+          "lat": 3,
+          "lon": 1,
+          "alt": 1,
+          "connections": [
+            {
+              "to": "A1",
+              "distance": 15
+            },
+            {
+              "to": "A3",
+              "distance": 10
+            },
+            {
+              "to": "A9",
+              "distance": 10
+            }
+          ],
+          "number": 2,
+          "floor": "A",
+          "type": "Escalera",
+          "risk_block_a": 0,
+          "risk_block_b": 0
+        },
+        {
+          "id": "A3",
+          "lat": 4,
+          "lon": 1,
+          "alt": 1,
+          "connections": [
+            {
+              "to": "A2",
+              "distance": 10
+            },
+            {
+              "to": "A4",
+              "distance": 10
+            }
+          ],
+          "number": 3,
+          "floor": "A",
+          "type": "Disponible",
+          "risk_block_a": 0,
+          "risk_block_b": 0
+        },
+        {
+          "id": "A4",
+          "lat": 5,
+          "lon": 1,
+          "alt": 1,
+          "connections": [
+            {
+              "to": "A3",
+              "distance": 10
+            },
+            {
+              "to": "A5",
+              "distance": 15
+            },
+            {
+              "to": "A6",
+              "distance": 10
+            }
+          ],
+          "number": 4,
+          "floor": "A",
+          "type": "Escalera",
+          "risk_block_a": 0,
+          "risk_block_b": 0
+        },
+        {
+          "id": "A5",
+          "lat": 5,
+          "lon": 2,
+          "alt": 0,
+          "connections": [
+            {
+              "to": "A4",
+              "distance": 15
+            }
+          ],
+          "number": 5,
+          "floor": "A",
+          "type": "Salida",
+          "risk_block_a": 0,
+          "risk_block_b": 0
+        },
+        {
+          "id": "A6",
+          "lat": 6,
+          "lon": 1,
+          "alt": 1,
+          "connections": [
+            {
+              "to": "A4",
+              "distance": 10
+            },
+            {
+              "to": "A7",
+              "distance": 10
+            }
+          ],
+          "number": 6,
+          "floor": "A",
+          "type": "Disponible",
+          "risk_block_a": 0,
+          "risk_block_b": 0
+        },
+        {
+          "id": "A7",
+          "lat": 7,
+          "lon": 1,
+          "alt": 1,
+          "connections": [
+            {
+              "to": "A6",
+              "distance": 10
+            },
+            {
+              "to": "A8",
+              "distance": 10
+            }
+          ],
+          "number": 7,
+          "floor": "A",
+          "type": "Disponible",
+          "risk_block_a": 0,
+          "risk_block_b": 0
+        },
+        {
+          "id": "A8",
+          "lat": 8,
+          "lon": 1,
+          "alt": 1,
+          "connections": [
+            {
+              "to": "A7",
+              "distance": 10
+            },
+            {
+              "to": "A13",
+              "distance": 15
+            }
+          ],
+          "number": 8,
+          "floor": "A",
+          "type": "Escalera",
+          "risk_block_a": 0,
+          "risk_block_b": 0
+        },
+        {
+          "id": "A9",
+          "lat": 2,
+          "lon": 1,
+          "alt": 1,
+          "connections": [
+            {
+              "to": "A2",
+              "distance": 10
+            },
+            {
+              "to": "A10",
+              "distance": 10
+            }
+          ],
+          "number": 9,
+          "floor": "A",
+          "type": "Disponible",
+          "risk_block_a": 0,
+          "risk_block_b": 0
+        },
+        {
+          "id": "A10",
+          "lat": 1,
+          "lon": 1,
+          "alt": 1,
+          "connections": [
+            {
+              "to": "A9",
+              "distance": 10
+            },
+            {
+              "to": "A11",
+              "distance": 10
+            }
+          ],
+          "number": 10,
+          "floor": "A",
+          "type": "Disponible",
+          "risk_block_a": 0,
+          "risk_block_b": 0
+        },
+        {
+          "id": "A11",
+          "lat": 0,
+          "lon": 1,
+          "alt": 1,
+          "connections": [
+            {
+              "to": "A10",
+              "distance": 10
+            },
+            {
+              "to": "A12",
+              "distance": 15
+            }
+          ],
+          "number": 11,
+          "floor": "A",
+          "type": "Escalera",
+          "risk_block_a": 0,
+          "risk_block_b": 0
+        },
+        {
+          "id": "A12",
+          "lat": 0,
+          "lon": 2,
+          "alt": 2,
+          "connections": [
+            {
+              "to": "A11",
+              "distance": 15
+            },
+            {
+              "to": "B1",
+              "distance": 10
+            }
+          ],
+          "number": 12,
+          "floor": "A",
+          "type": "Escalera",
+          "risk_block_a": 0,
+          "risk_block_b": 0
+        },
+        {
+          "id": "A13",
+          "lat": 8,
+          "lon": 2,
+          "alt": 2,
+          "connections": [
+            {
+              "to": "A8",
+              "distance": 15
+            },
+            {
+              "to": "B2",
+              "distance": 10
+            }
+          ],
+          "number": 13,
+          "floor": "A",
+          "type": "Escalera",
+          "risk_block_a": 0,
+          "risk_block_b": 0
+        },
+        {
+          "id": "B1",
+          "lat": 1,
+          "lon": 2,
+          "alt": 2,
+          "connections": [
+            {
+              "to": "A12",
+              "distance": 10
+            },
+            {
+              "to": "B3",
+              "distance": 15
+            }
+          ],
+          "number": 14,
+          "floor": "B",
+          "type": "Escalera",
+          "risk_block_a": 0,
+          "risk_block_b": 0
+        },
+        {
+          "id": "B2",
+          "lat": 7,
+          "lon": 2,
+          "alt": 2,
+          "connections": [
+            {
+              "to": "A13",
+              "distance": 10
+            },
+            {
+              "to": "B4",
+              "distance": 15
+            }
+          ],
+          "number": 15,
+          "floor": "B",
+          "type": "Escalera",
+          "risk_block_a": 0,
+          "risk_block_b": 0
+        },
+        {
+          "id": "B3",
+          "lat": 1,
+          "lon": 1,
+          "alt": 3,
+          "connections": [
+            {
+              "to": "B1",
+              "distance": 15
+            },
+            {
+              "to": "B5",
+              "distance": 10
+            },
+            {
+              "to": "B9",
+              "distance": 10
+            }
+          ],
+          "number": 16,
+          "floor": "B",
+          "type": "Escalera",
+          "risk_block_a": 0,
+          "risk_block_b": 0
+        },
+        {
+          "id": "B4",
+          "lat": 7,
+          "lon": 1,
+          "alt": 3,
+          "connections": [
+            {
+              "to": "B2",
+              "distance": 15
+            },
+            {
+              "to": "B6",
+              "distance": 10
+            },
+            {
+              "to": "B13",
+              "distance": 10
+            }
+          ],
+          "number": 17,
+          "floor": "B",
+          "type": "Escalera",
+          "risk_block_a": 0,
+          "risk_block_b": 0
+        },
+        {
+          "id": "B5",
+          "lat": 0,
+          "lon": 1,
+          "alt": 3,
+          "connections": [
+            {
+              "to": "B3",
+              "distance": 10
+            },
+            {
+              "to": "B7",
+              "distance": 15
+            }
+          ],
+          "number": 18,
+          "floor": "B",
+          "type": "Escalera",
+          "risk_block_a": 0,
+          "risk_block_b": 0
+        },
+        {
+          "id": "B6",
+          "lat": 8,
+          "lon": 1,
+          "alt": 3,
+          "connections": [
+            {
+              "to": "B4",
+              "distance": 10
+            },
+            {
+              "to": "B8",
+              "distance": 15
+            }
+          ],
+          "number": 19,
+          "floor": "B",
+          "type": "Escalera",
+          "risk_block_a": 0,
+          "risk_block_b": 0
+        },
+        {
+          "id": "B7",
+          "lat": 0,
+          "lon": 2,
+          "alt": 4,
+          "connections": [
+            {
+              "to": "B5",
+              "distance": 15
+            },
+            {
+              "to": "C1",
+              "distance": 10
+            }
+          ],
+          "number": 20,
+          "floor": "B",
+          "type": "Escalera",
+          "risk_block_a": 0,
+          "risk_block_b": 0
+        },
+        {
+          "id": "B8",
+          "lat": 8,
+          "lon": 2,
+          "alt": 4,
+          "connections": [
+            {
+              "to": "B6",
+              "distance": 15
+            },
+            {
+              "to": "C2",
+              "distance": 10
+            }
+          ],
+          "number": 21,
+          "floor": "B",
+          "type": "Escalera",
+          "risk_block_a": 0,
+          "risk_block_b": 0
+        },
+        {
+          "id": "B9",
+          "lat": 2,
+          "lon": 1,
+          "alt": 3,
+          "connections": [
+            {
+              "to": "B3",
+              "distance": 10
+            },
+            {
+              "to": "B10",
+              "distance": 10
+            }
+          ],
+          "number": 22,
+          "floor": "B",
+          "type": "Disponible",
+          "risk_block_a": 0,
+          "risk_block_b": 0
+        },
+        {
+          "id": "B10",
+          "lat": 3,
+          "lon": 1,
+          "alt": 3,
+          "connections": [
+            {
+              "to": "B9",
+              "distance": 10
+            },
+            {
+              "to": "B11",
+              "distance": 10
+            }
+          ],
+          "number": 23,
+          "floor": "B",
+          "type": "Disponible",
+          "risk_block_a": 0,
+          "risk_block_b": 0
+        },
+        {
+          "id": "B11",
+          "lat": 4,
+          "lon": 1,
+          "alt": 3,
+          "connections": [
+            {
+              "to": "B10",
+              "distance": 10
+            },
+            {
+              "to": "B12",
+              "distance": 10
+            }
+          ],
+          "number": 24,
+          "floor": "B",
+          "type": "Disponible",
+          "risk_block_a": 0,
+          "risk_block_b": 0
+        },
+        {
+          "id": "B12",
+          "lat": 5,
+          "lon": 1,
+          "alt": 3,
+          "connections": [
+            {
+              "to": "B11",
+              "distance": 10
+            },
+            {
+              "to": "B13",
+              "distance": 10
+            }
+          ],
+          "number": 25,
+          "floor": "B",
+          "type": "Disponible",
+          "risk_block_a": 0,
+          "risk_block_b": 0
+        },
+        {
+          "id": "B13",
+          "lat": 6,
+          "lon": 1,
+          "alt": 3,
+          "connections": [
+            {
+              "to": "B12",
+              "distance": 10
+            },
+            {
+              "to": "B4",
+              "distance": 10
+            }
+          ],
+          "number": 26,
+          "floor": "B",
+          "type": "Disponible",
+          "risk_block_a": 0,
+          "risk_block_b": 0
+        },
+        {
+          "id": "C1",
+          "lat": 1,
+          "lon": 2,
+          "alt": 4,
+          "connections": [
+            {
+              "to": "B7",
+              "distance": 10
+            },
+            {
+              "to": "C3",
+              "distance": 15
+            }
+          ],
+          "number": 27,
+          "floor": "C",
+          "type": "Escalera",
+          "risk_block_a": 0,
+          "risk_block_b": 0
+        },
+        {
+          "id": "C2",
+          "lat": 7,
+          "lon": 2,
+          "alt": 4,
+          "connections": [
+            {
+              "to": "B8",
+              "distance": 10
+            },
+            {
+              "to": "C4",
+              "distance": 15
+            }
+          ],
+          "number": 28,
+          "floor": "C",
+          "type": "Escalera",
+          "risk_block_a": 0,
+          "risk_block_b": 0
+        },
+        {
+          "id": "C3",
+          "lat": 1,
+          "lon": 1,
+          "alt": 5,
+          "connections": [
+            {
+              "to": "C1",
+              "distance": 15
+            },
+            {
+              "to": "C5",
+              "distance": 10
+            },
+            {
+              "to": "C9",
+              "distance": 10
+            }
+          ],
+          "number": 29,
+          "floor": "C",
+          "type": "Escalera",
+          "risk_block_a": 0,
+          "risk_block_b": 0
+        },
+        {
+          "id": "C4",
+          "lat": 7,
+          "lon": 1,
+          "alt": 5,
+          "connections": [
+            {
+              "to": "C2",
+              "distance": 15
+            },
+            {
+              "to": "C6",
+              "distance": 10
+            },
+            {
+              "to": "C13",
+              "distance": 10
+            }
+          ],
+          "number": 30,
+          "floor": "C",
+          "type": "Escalera",
+          "risk_block_a": 0,
+          "risk_block_b": 0
+        },
+        {
+          "id": "C5",
+          "lat": 0,
+          "lon": 1,
+          "alt": 5,
+          "connections": [
+            {
+              "to": "C3",
+              "distance": 10
+            },
+            {
+              "to": "C7",
+              "distance": 15
+            }
+          ],
+          "number": 31,
+          "floor": "C",
+          "type": "Escalera",
+          "risk_block_a": 0,
+          "risk_block_b": 0
+        },
+        {
+          "id": "C6",
+          "lat": 8,
+          "lon": 1,
+          "alt": 5,
+          "connections": [
+            {
+              "to": "C4",
+              "distance": 10
+            },
+            {
+              "to": "C8",
+              "distance": 15
+            }
+          ],
+          "number": 32,
+          "floor": "C",
+          "type": "Escalera",
+          "risk_block_a": 0,
+          "risk_block_b": 0
+        },
+        {
+          "id": "C7",
+          "lat": 0,
+          "lon": 2,
+          "alt": 6,
+          "connections": [
+            {
+              "to": "C5",
+              "distance": 15
+            },
+            {
+              "to": "D1",
+              "distance": 10
+            }
+          ],
+          "number": 33,
+          "floor": "C",
+          "type": "Escalera",
+          "risk_block_a": 0,
+          "risk_block_b": 0
+        },
+        {
+          "id": "C8",
+          "lat": 8,
+          "lon": 2,
+          "alt": 6,
+          "connections": [
+            {
+              "to": "C6",
+              "distance": 15
+            },
+            {
+              "to": "D2",
+              "distance": 10
+            }
+          ],
+          "number": 34,
+          "floor": "C",
+          "type": "Escalera",
+          "risk_block_a": 0,
+          "risk_block_b": 0
+        },
+        {
+          "id": "C9",
+          "lat": 2,
+          "lon": 1,
+          "alt": 5,
+          "connections": [
+            {
+              "to": "C3",
+              "distance": 10
+            },
+            {
+              "to": "C10",
+              "distance": 10
+            }
+          ],
+          "number": 35,
+          "floor": "C",
+          "type": "Disponible",
+          "risk_block_a": 0,
+          "risk_block_b": 0
+        },
+        {
+          "id": "C10",
+          "lat": 3,
+          "lon": 1,
+          "alt": 5,
+          "connections": [
+            {
+              "to": "C9",
+              "distance": 10
+            },
+            {
+              "to": "C11",
+              "distance": 10
+            }
+          ],
+          "number": 36,
+          "floor": "C",
+          "type": "Disponible",
+          "risk_block_a": 0,
+          "risk_block_b": 0
+        },
+        {
+          "id": "C11",
+          "lat": 4,
+          "lon": 1,
+          "alt": 5,
+          "connections": [
+            {
+              "to": "C10",
+              "distance": 10
+            },
+            {
+              "to": "C12",
+              "distance": 10
+            }
+          ],
+          "number": 37,
+          "floor": "C",
+          "type": "Disponible",
+          "risk_block_a": 0,
+          "risk_block_b": 0
+        },
+        {
+          "id": "C12",
+          "lat": 5,
+          "lon": 1,
+          "alt": 5,
+          "connections": [
+            {
+              "to": "C11",
+              "distance": 10
+            },
+            {
+              "to": "C13",
+              "distance": 10
+            }
+          ],
+          "number": 38,
+          "floor": "C",
+          "type": "Disponible",
+          "risk_block_a": 0,
+          "risk_block_b": 0
+        },
+        {
+          "id": "C13",
+          "lat": 6,
+          "lon": 1,
+          "alt": 5,
+          "connections": [
+            {
+              "to": "C12",
+              "distance": 10
+            },
+            {
+              "to": "C4",
+              "distance": 10
+            }
+          ],
+          "number": 39,
+          "floor": "C",
+          "type": "Disponible",
+          "risk_block_a": 0,
+          "risk_block_b": 0
+        },
+        {
+          "id": "D1",
+          "lat": 1,
+          "lon": 2,
+          "alt": 6,
+          "connections": [
+            {
+              "to": "C7",
+              "distance": 10
+            },
+            {
+              "to": "D3",
+              "distance": 15
+            }
+          ],
+          "number": 40,
+          "floor": "D",
+          "type": "Escalera",
+          "risk_block_a": 0,
+          "risk_block_b": 0
+        },
+        {
+          "id": "D2",
+          "lat": 7,
+          "lon": 2,
+          "alt": 6,
+          "connections": [
+            {
+              "to": "C8",
+              "distance": 10
+            },
+            {
+              "to": "D4",
+              "distance": 15
+            }
+          ],
+          "number": 41,
+          "floor": "D",
+          "type": "Escalera",
+          "risk_block_a": 0,
+          "risk_block_b": 0
+        },
+        {
+          "id": "D3",
+          "lat": 1,
+          "lon": 1,
+          "alt": 7,
+          "connections": [
+            {
+              "to": "D1",
+              "distance": 15
+            },
+            {
+              "to": "D5",
+              "distance": 10
+            },
+            {
+              "to": "D9",
+              "distance": 10
+            }
+          ],
+          "number": 42,
+          "floor": "D",
+          "type": "Escalera",
+          "risk_block_a": 0,
+          "risk_block_b": 0
+        },
+        {
+          "id": "D4",
+          "lat": 7,
+          "lon": 1,
+          "alt": 7,
+          "connections": [
+            {
+              "to": "D2",
+              "distance": 15
+            },
+            {
+              "to": "D6",
+              "distance": 10
+            },
+            {
+              "to": "D13",
+              "distance": 10
+            }
+          ],
+          "number": 43,
+          "floor": "D",
+          "type": "Escalera",
+          "risk_block_a": 0,
+          "risk_block_b": 0
+        },
+        {
+          "id": "D5",
+          "lat": 0,
+          "lon": 1,
+          "alt": 7,
+          "connections": [
+            {
+              "to": "D3",
+              "distance": 10
+            },
+            {
+              "to": "D7",
+              "distance": 15
+            }
+          ],
+          "number": 44,
+          "floor": "D",
+          "type": "Escalera",
+          "risk_block_a": 0,
+          "risk_block_b": 0
+        },
+        {
+          "id": "D6",
+          "lat": 8,
+          "lon": 1,
+          "alt": 7,
+          "connections": [
+            {
+              "to": "D4",
+              "distance": 10
+            },
+            {
+              "to": "D8",
+              "distance": 15
+            }
+          ],
+          "number": 45,
+          "floor": "D",
+          "type": "Escalera",
+          "risk_block_a": 0,
+          "risk_block_b": 0
+        },
+        {
+          "id": "D7",
+          "lat": 0,
+          "lon": 2,
+          "alt": 8,
+          "connections": [
+            {
+              "to": "D5",
+              "distance": 15
+            },
+            {
+              "to": "E1",
+              "distance": 10
+            }
+          ],
+          "number": 46,
+          "floor": "D",
+          "type": "Escalera",
+          "risk_block_a": 0,
+          "risk_block_b": 0
+        },
+        {
+          "id": "D8",
+          "lat": 8,
+          "lon": 2,
+          "alt": 8,
+          "connections": [
+            {
+              "to": "D6",
+              "distance": 15
+            },
+            {
+              "to": "E2",
+              "distance": 10
+            }
+          ],
+          "number": 47,
+          "floor": "D",
+          "type": "Escalera",
+          "risk_block_a": 0,
+          "risk_block_b": 0
+        },
+        {
+          "id": "D9",
+          "lat": 2,
+          "lon": 1,
+          "alt": 7,
+          "connections": [
+            {
+              "to": "D3",
+              "distance": 10
+            },
+            {
+              "to": "D10",
+              "distance": 10
+            }
+          ],
+          "number": 48,
+          "floor": "D",
+          "type": "Disponible",
+          "risk_block_a": 0,
+          "risk_block_b": 0
+        },
+        {
+          "id": "D10",
+          "lat": 3,
+          "lon": 1,
+          "alt": 7,
+          "connections": [
+            {
+              "to": "D9",
+              "distance": 10
+            },
+            {
+              "to": "D11",
+              "distance": 10
+            }
+          ],
+          "number": 49,
+          "floor": "D",
+          "type": "Disponible",
+          "risk_block_a": 0,
+          "risk_block_b": 0
+        },
+        {
+          "id": "D11",
+          "lat": 4,
+          "lon": 1,
+          "alt": 7,
+          "connections": [
+            {
+              "to": "D10",
+              "distance": 10
+            },
+            {
+              "to": "D12",
+              "distance": 10
+            }
+          ],
+          "number": 50,
+          "floor": "D",
+          "type": "Disponible",
+          "risk_block_a": 0,
+          "risk_block_b": 0
+        },
+        {
+          "id": "D12",
+          "lat": 5,
+          "lon": 1,
+          "alt": 7,
+          "connections": [
+            {
+              "to": "D11",
+              "distance": 10
+            },
+            {
+              "to": "D13",
+              "distance": 10
+            }
+          ],
+          "number": 51,
+          "floor": "D",
+          "type": "Disponible",
+          "risk_block_a": 0,
+          "risk_block_b": 0
+        },
+        {
+          "id": "D13",
+          "lat": 6,
+          "lon": 1,
+          "alt": 7,
+          "connections": [
+            {
+              "to": "D12",
+              "distance": 10
+            },
+            {
+              "to": "D4",
+              "distance": 10
+            }
+          ],
+          "number": 52,
+          "floor": "D",
+          "type": "Disponible",
+          "risk_block_a": 0,
+          "risk_block_b": 0
+        },
+        {
+          "id": "E1",
+          "lat": 1,
+          "lon": 2,
+          "alt": 8,
+          "connections": [
+            {
+              "to": "D7",
+              "distance": 10
+            },
+            {
+              "to": "E3",
+              "distance": 15
+            }
+          ],
+          "number": 53,
+          "floor": "E",
+          "type": "Escalera",
+          "risk_block_a": 0,
+          "risk_block_b": 0
+        },
+        {
+          "id": "E2",
+          "lat": 7,
+          "lon": 2,
+          "alt": 8,
+          "connections": [
+            {
+              "to": "D8",
+              "distance": 10
+            },
+            {
+              "to": "E4",
+              "distance": 15
+            }
+          ],
+          "number": 54,
+          "floor": "E",
+          "type": "Escalera",
+          "risk_block_a": 0,
+          "risk_block_b": 0
+        },
+        {
+          "id": "E3",
+          "lat": 1,
+          "lon": 1,
+          "alt": 9,
+          "connections": [
+            {
+              "to": "E1",
+              "distance": 15
+            },
+            {
+              "to": "E5",
+              "distance": 10
+            },
+            {
+              "to": "E7",
+              "distance": 10
+            }
+          ],
+          "number": 55,
+          "floor": "E",
+          "type": "Escalera",
+          "risk_block_a": 0,
+          "risk_block_b": 0
+        },
+        {
+          "id": "E4",
+          "lat": 7,
+          "lon": 1,
+          "alt": 9,
+          "connections": [
+            {
+              "to": "E2",
+              "distance": 15
+            },
+            {
+              "to": "E6",
+              "distance": 10
+            },
+            {
+              "to": "E11",
+              "distance": 10
+            }
+          ],
+          "number": 56,
+          "floor": "E",
+          "type": "Escalera",
+          "risk_block_a": 0,
+          "risk_block_b": 0
+        },
+        {
+          "id": "E5",
+          "lat": 0,
+          "lon": 1,
+          "alt": 9,
+          "connections": [
+            {
+              "to": "E3",
+              "distance": 10
+            }
+          ],
+          "number": 57,
+          "floor": "E",
+          "type": "Disponible",
+          "risk_block_a": 0,
+          "risk_block_b": 0
+        },
+        {
+          "id": "E6",
+          "lat": 8,
+          "lon": 1,
+          "alt": 9,
+          "connections": [
+            {
+              "to": "E4",
+              "distance": 10
+            }
+          ],
+          "number": 58,
+          "floor": "E",
+          "type": "Disponible",
+          "risk_block_a": 0,
+          "risk_block_b": 0
+        },
+        {
+          "id": "E7",
+          "lat": 2,
+          "lon": 1,
+          "alt": 9,
+          "connections": [
+            {
+              "to": "E3",
+              "distance": 10
+            },
+            {
+              "to": "E8",
+              "distance": 10
+            }
+          ],
+          "number": 59,
+          "floor": "E",
+          "type": "Disponible",
+          "risk_block_a": 0,
+          "risk_block_b": 0
+        },
+        {
+          "id": "E8",
+          "lat": 3,
+          "lon": 1,
+          "alt": 9,
+          "connections": [
+            {
+              "to": "E7",
+              "distance": 10
+            },
+            {
+              "to": "E9",
+              "distance": 10
+            }
+          ],
+          "number": 60,
+          "floor": "E",
+          "type": "Disponible",
+          "risk_block_a": 0,
+          "risk_block_b": 0
+        },
+        {
+          "id": "E9",
+          "lat": 4,
+          "lon": 1,
+          "alt": 9,
+          "connections": [
+            {
+              "to": "E8",
+              "distance": 10
+            },
+            {
+              "to": "E10",
+              "distance": 10
+            }
+          ],
+          "number": 61,
+          "floor": "E",
+          "type": "Disponible",
+          "risk_block_a": 0,
+          "risk_block_b": 0
+        },
+        {
+          "id": "E10",
+          "lat": 5,
+          "lon": 1,
+          "alt": 9,
+          "connections": [
+            {
+              "to": "E9",
+              "distance": 10
+            },
+            {
+              "to": "E11",
+              "distance": 10
+            }
+          ],
+          "number": 62,
+          "floor": "E",
+          "type": "Disponible",
+          "risk_block_a": 0,
+          "risk_block_b": 0
+        },
+        {
+          "id": "E11",
+          "lat": 6,
+          "lon": 1,
+          "alt": 9,
+          "connections": [
+            {
+              "to": "E10",
+              "distance": 10
+            },
+            {
+              "to": "E4",
+              "distance": 10
+            }
+          ],
+          "number": 63,
+          "floor": "E",
+          "type": "Disponible",
+          "risk_block_a": 0,
+          "risk_block_b": 0
+        }
+      ]
+    }
+  ]
+}
