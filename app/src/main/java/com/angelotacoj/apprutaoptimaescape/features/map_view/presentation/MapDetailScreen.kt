@@ -41,7 +41,7 @@ fun MapDetailScreen(mapId: String, paddingValues: PaddingValues, onContinue: () 
                     .fillMaxWidth()
                     .height(600.dp)
             )
-            Spacer(Modifier.height(16.dp))
+            Spacer(Modifier.weight(1f))
             Button(
                 onClick = onContinue,
                 modifier = Modifier

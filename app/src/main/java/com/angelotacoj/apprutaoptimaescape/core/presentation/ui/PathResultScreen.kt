@@ -1,35 +1,60 @@
 package com.angelotacoj.apprutaoptimaescape.core.presentation.ui
 
+import android.Manifest
+import android.annotation.SuppressLint
+import android.content.pm.PackageManager
+import android.os.Build
+import android.util.Log
+import androidx.annotation.RequiresApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat
 import androidx.navigation.NavController
 import com.angelotacoj.apprutaoptimaescape.core.domain.algorithms.AStar
+import com.angelotacoj.apprutaoptimaescape.core.domain.algorithms.AntColony
 import com.angelotacoj.apprutaoptimaescape.core.domain.algorithms.BFS
 import com.angelotacoj.apprutaoptimaescape.core.domain.algorithms.Dijkstra
+import com.angelotacoj.apprutaoptimaescape.core.domain.algorithms.QLearning
+import com.angelotacoj.apprutaoptimaescape.features.location.presentation.LocationViewModel
 import com.angelotacoj.apprutaoptimaescape.features.map_view.presentation.GraphViewIsometric
 import com.angelotacoj.apprutaoptimaescape.features.map_view.presentation.projectIsometric
 import com.angelotacoj.apprutaoptimaescape.features.map_selector.presentation.MapsViewModel
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.isGranted
+import com.google.accompanist.permissions.rememberMultiplePermissionsState
+import com.google.accompanist.permissions.rememberPermissionState
+import com.google.accompanist.permissions.shouldShowRationale
 import org.koin.androidx.compose.getViewModel
+import kotlin.math.cos
 import kotlin.math.pow
 
+@SuppressLint("LogNotTimber")
+@OptIn(ExperimentalPermissionsApi::class)
+@RequiresApi(Build.VERSION_CODES.S)
 @Composable
 fun PathResultScreen(
     mapId: String,
@@ -37,97 +62,144 @@ fun PathResultScreen(
     paddingValues: PaddingValues,
     navController: NavController,
 ) {
-    // 1) Cargo el grafo
-    val viewModel: MapsViewModel = getViewModel()
-    val graphState = viewModel.maps.collectAsState()
-    LaunchedEffect(Unit) {
-        if (graphState.value.isEmpty()) {
-            viewModel.loadMaps()
-        }
+    val mapVm: MapsViewModel = getViewModel()
+    val locVm: LocationViewModel = getViewModel()
+    val graphState    by mapVm.maps.collectAsState()
+    val locationState by locVm.location.collectAsState()
+
+    // **Punto de referencia GPS** (esquina conocida de tu plano)
+    val REF_LAT = 19.43254
+    val REF_LON = -99.13327
+    // Conversión aproximada grados→metros en latitud/longitud
+    val METERS_PER_DEG_LAT = 111_320f
+    val METERS_PER_DEG_LON = cos(Math.toRadians(REF_LAT)) * 111_320f
+
+    fun gpsToLocal(lon: Double, lat: Double): Pair<Float, Float> {
+        val dx = ((lon - REF_LON) * METERS_PER_DEG_LON).toFloat()
+        val dy = ((lat - REF_LAT) * METERS_PER_DEG_LAT).toFloat()
+        return dx to dy
     }
-    val graph = graphState.value.find { it.id == mapId }
-    if (graph == null) {
-        // mientras cargamos…
-        Box(Modifier.fillMaxSize().padding(paddingValues)) {
-            Text("Cargando mapa…", Modifier.align(Alignment.Center))
+
+    // 1) Pedir permisos de ubicación
+    val permissionState = rememberMultiplePermissionsState(
+        listOf(
+            Manifest.permission.ACCESS_FINE_LOCATION,
+            Manifest.permission.ACCESS_COARSE_LOCATION
+        )
+    )
+    LaunchedEffect(Unit) {
+        permissionState.launchMultiplePermissionRequest()
+    }
+    LaunchedEffect(permissionState.allPermissionsGranted) {
+        if (permissionState.allPermissionsGranted) {
+            Log.d("PathResult", "✅ Permisos OK, arrancando location")
+            locVm.startLocationUpdates()
+        } else {
+            Log.d("PathResult", "⛔️ Faltan permisos de ubicación")
+        }
+        if (graphState.isEmpty()) mapVm.loadMaps()
+    }
+
+    // 2) Mientras no tengamos grafo O ubicación, mensaje
+    val graph    = graphState.find { it.id == mapId }
+    val location = locationState
+    if (graph == null || location == null) {
+        Box(Modifier
+            .fillMaxSize()
+            .padding(paddingValues)) {
+            Text(
+                when {
+                    graph    == null -> "Cargando mapa…"
+                    location == null -> "Obteniendo ubicación…"
+                    else             -> ""
+                },
+                Modifier.align(Alignment.Center)
+            )
         }
         return
     }
 
-    // 2) Simulamos o pedimos ubicación real
-    var userPosition by remember { mutableStateOf(Offset.Zero) }
-    // Aquí invocarías fused location y transformarías a nuestras coords si quieres
-    LaunchedEffect(Unit) {
-        // TODO: usar FusedLocationClient para obtener lat/lon y convertirlas
-        // Actualmente simulamos en el nodo A9:
-        val startNode = graph.nodes.first { it.id == "E2" }
-        userPosition = projectIsometric(startNode.lon.toFloat(), startNode.lat.toFloat(), startNode.alt.toFloat())
-    }
+    // 3) Muestra GPS bruto y convierte a coordenadas locales
+    val (gx, gy) = gpsToLocal(location.longitude, location.latitude)
+    // 4) Proyecta isométrico para visualizar
+    val userOffset = projectIsometric(x = gx, y = gy, z = 0f)
 
-    // 3) Calcular camino óptimo
-    val path = remember(graph, algorithm, userPosition) {
-        // 3.1) Hallar nodo más cercano a userPosition
-        val nearest = graph.nodes.minByOrNull { node ->
-            val p = projectIsometric(node.lon.toFloat(), node.lat.toFloat(), node.alt.toFloat())
-            (p.x - userPosition.x).pow(2) + (p.y - userPosition.y).pow(2)
-        }!!
-        // 3.2) Encontrar todos los nodos tipo “Salida”
-        val exits = graph.nodes.filter { it.type == "Salida" }
-        // 3.3) Ejecutar algoritmo
+    // 5) Encuentra nodo más cercano (euclídea en isométrico)
+    val nearestGpsNode = graph.nodes.minByOrNull { node ->
+        val p = projectIsometric(node.lon.toFloat(), node.lat.toFloat(), node.alt.toFloat())
+        (p.x - userOffset.x).pow(2) + (p.y - userOffset.y).pow(2)
+    }!!.id
+
+    // 6) Calcula ruta con el algoritmo elegido
+    val exits = graph.nodes.filter { it.type == "Salida" }.map { it.id }
+    val path = remember(graph, algorithm, nearestGpsNode) {
         when (algorithm) {
-            "Dijkstra" -> Dijkstra.findPath(graph, nearest.id, exits.map { it.id })
-            "A*"       -> AStar.findPath(graph, nearest.id, exits.map { it.id })
-            else       -> BFS.findPath(graph, nearest.id, exits.map { it.id })
+            "Ant Colony" -> AntColony.findPath(graph, nearestGpsNode, exits)
+            "QLearning"  -> QLearning.findPath(graph, nearestGpsNode, exits)
+            else         -> BFS.findPath(graph, nearestGpsNode, exits)
         }
     }
 
-    // 4) Estado de “paso actual”
-    var step by remember { mutableStateOf(0) }
-    val current = path.getOrNull(step)
-    val next    = path.getOrNull(step + 1)
+// 6) Paso actual (sobre la lista `path`)
+    var step by remember { mutableIntStateOf(0) }
+    val isAtEnd = step >= path.lastIndex
+    // currentNode = path[step], nextNode = path[step+1]
+    val currentNode = path.getOrNull(step) ?: nearestGpsNode
+    val nextNode    = path.getOrNull(step + 1)
 
+    Column(Modifier
+        .fillMaxSize()
+        .padding(paddingValues)) {
+        // --- DEBUG ---
+/*        Column(Modifier
+            .fillMaxWidth()
+            .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.5f))
+            .padding(16.dp)) {
+            Text("GPS real: %.5f, %.5f".format(location.latitude, location.longitude))
+            Text("Local (m): x=%.1f, y=%.1f".format(gx, gy))
+            val displayNode = nextNode ?: "Fin de ruta"
+            Text("Nodo cercano (GPS): ${displayNode}")
+            Text("Inicio ruta: ${path.firstOrNull() ?: nearestGpsNode}")
+        }*/
 
-    Column(
-        Modifier
-            .fillMaxSize()
-            .padding(paddingValues)
-    ) {
-        // 5) Mapa con highlight de ruta y paso
+        // --- MAPA ---
         Box(Modifier.weight(1f)) {
             GraphViewIsometric(
-                graph = graph,
+                graph           = graph,
                 pathToHighlight = path,
-                currentStep = step
+                currentStep     = step
             )
         }
 
         Spacer(Modifier.height(8.dp))
-        // 6) Indicaciones textuales
-        current?.let {
-            Text("Estás en el nodo: $it", Modifier.padding(horizontal = 16.dp))
-        }
-        if (next != null) {
-            Text("Siguiente paso: ve al nodo $next", Modifier.padding(horizontal = 16.dp))
-        } else {
-            Text("¡Has llegado a la salida!", Modifier.padding(horizontal = 16.dp))
+
+        // --- INSTRUCCIONES DINÁMICAS ---
+        Column(
+            Modifier
+                .fillMaxWidth()
+                .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.5f))
+                .padding(16.dp)
+        ) {
+            Text("Estás en: $currentNode", Modifier.padding(horizontal = 16.dp))
+            if (nextNode != null) {
+                Text("Siguiente: ve al nodo $nextNode", Modifier.padding(horizontal = 16.dp))
+            } else {
+                Text("¡Llegaste a la salida!", Modifier.padding(horizontal = 16.dp))
+            }
         }
 
-        Spacer(Modifier.height(16.dp))
-        // 7) Botón para avanzar
-        /*Button(
-            onClick = { if (step < path.lastIndex) step++ },
-            modifier = Modifier
+        Spacer(Modifier.height(8.dp))
+
+        // --- BOTÓN AVANZAR / FINALIZAR ---
+        Button(
+            onClick = {
+                if (!isAtEnd) step++ else navController.popBackStack()
+            },
+            Modifier
                 .fillMaxWidth()
                 .padding(16.dp)
         ) {
-            Text(if (next != null) "Ir al siguiente paso" else "Reiniciar ruta").also {
-                if (next == null) step = 0
-            }
-        }*/
-        val isAtEnd = step >= path.lastIndex
-        Button(
-            onClick = { if (!isAtEnd) step++ else navController.popBackStack() },
-            enabled = true
-        ) { Text(if (!isAtEnd) "Siguiente paso" else "Finalizar") }
+            Text(if (!isAtEnd) "Siguiente paso" else "Finalizar")
+        }
     }
 }

@@ -18,7 +18,11 @@ fun AlgorithmSelectionScreen(
     paddingValues: PaddingValues,
     onAlgorithmSelected: (String) -> Unit
 ) {
-    val algorithms = listOf("Dijkstra", "A*", "BFS", "DFS")
+    //val algorithms = listOf("Dijkstra", "A*", "BFS", "DFS")
+    val algorithms = listOf(
+        "Ant Colony",
+        "QLearning",
+    )
     LazyColumn(modifier = Modifier.padding(paddingValues)) {
         items(algorithms) { it ->
             Card(

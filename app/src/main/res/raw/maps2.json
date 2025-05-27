@@ -1,0 +1,423 @@
+{
+  "maps": [
+    {
+      "id": "map_ext1",
+      "name": "Edificio Central",
+      "description": "Mapa extenso de un edificio de 4 pisos con m\u00faltiples rutas y salidas",
+      "nodes": [
+        {
+          "id": "A1",
+          "lat": 0,
+          "lon": 0,
+          "alt": 0,
+          "connections": [
+            {
+              "to": "A2",
+              "distance": 10
+            }
+          ],
+          "number": 1,
+          "floor": "A",
+          "type": "Salida",
+          "risk_block_a": 0,
+          "risk_block_b": 0
+        },
+        {
+          "id": "A2",
+          "lat": 0,
+          "lon": 1,
+          "alt": 0,
+          "connections": [
+            {
+              "to": "A1",
+              "distance": 10
+            },
+            {
+              "to": "A3",
+              "distance": 10
+            }
+          ],
+          "number": 2,
+          "floor": "A",
+          "type": "Disponible",
+          "risk_block_a": 1,
+          "risk_block_b": 0
+        },
+        {
+          "id": "A3",
+          "lat": 0,
+          "lon": 2,
+          "alt": 0,
+          "connections": [
+            {
+              "to": "A2",
+              "distance": 10
+            },
+            {
+              "to": "A4",
+              "distance": 10
+            },
+            {
+              "to": "B3",
+              "distance": 15
+            }
+          ],
+          "number": 3,
+          "floor": "A",
+          "type": "Escalera",
+          "risk_block_a": 0,
+          "risk_block_b": 0
+        },
+        {
+          "id": "A4",
+          "lat": 0,
+          "lon": 3,
+          "alt": 0,
+          "connections": [
+            {
+              "to": "A3",
+              "distance": 10
+            },
+            {
+              "to": "A5",
+              "distance": 10
+            }
+          ],
+          "number": 4,
+          "floor": "A",
+          "type": "Disponible",
+          "risk_block_a": 1,
+          "risk_block_b": 0
+        },
+        {
+          "id": "A5",
+          "lat": 0,
+          "lon": 4,
+          "alt": 0,
+          "connections": [
+            {
+              "to": "A4",
+              "distance": 10
+            }
+          ],
+          "number": 5,
+          "floor": "A",
+          "type": "Salida",
+          "risk_block_a": 0,
+          "risk_block_b": 0
+        },
+        {
+          "id": "B1",
+          "lat": 1,
+          "lon": 0,
+          "alt": 3,
+          "connections": [
+            {
+              "to": "B2",
+              "distance": 10
+            }
+          ],
+          "number": 6,
+          "floor": "B",
+          "type": "Escalera",
+          "risk_block_a": 1,
+          "risk_block_b": 0
+        },
+        {
+          "id": "B2",
+          "lat": 1,
+          "lon": 1,
+          "alt": 3,
+          "connections": [
+            {
+              "to": "B1",
+              "distance": 10
+            },
+            {
+              "to": "B3",
+              "distance": 10
+            }
+          ],
+          "number": 7,
+          "floor": "B",
+          "type": "Disponible",
+          "risk_block_a": 0,
+          "risk_block_b": 1
+        },
+        {
+          "id": "B3",
+          "lat": 1,
+          "lon": 2,
+          "alt": 3,
+          "connections": [
+            {
+              "to": "B2",
+              "distance": 10
+            },
+            {
+              "to": "B4",
+              "distance": 10
+            },
+            {
+              "to": "A3",
+              "distance": 15
+            },
+            {
+              "to": "C3",
+              "distance": 15
+            }
+          ],
+          "number": 8,
+          "floor": "B",
+          "type": "Escalera",
+          "risk_block_a": 1,
+          "risk_block_b": 0
+        },
+        {
+          "id": "B4",
+          "lat": 1,
+          "lon": 3,
+          "alt": 3,
+          "connections": [
+            {
+              "to": "B3",
+              "distance": 10
+            },
+            {
+              "to": "B5",
+              "distance": 10
+            }
+          ],
+          "number": 9,
+          "floor": "B",
+          "type": "Disponible",
+          "risk_block_a": 0,
+          "risk_block_b": 1
+        },
+        {
+          "id": "B5",
+          "lat": 1,
+          "lon": 4,
+          "alt": 3,
+          "connections": [
+            {
+              "to": "B4",
+              "distance": 10
+            }
+          ],
+          "number": 10,
+          "floor": "B",
+          "type": "Escalera",
+          "risk_block_a": 1,
+          "risk_block_b": 0
+        },
+        {
+          "id": "C1",
+          "lat": 2,
+          "lon": 0,
+          "alt": 6,
+          "connections": [
+            {
+              "to": "C2",
+              "distance": 10
+            }
+          ],
+          "number": 11,
+          "floor": "C",
+          "type": "Escalera",
+          "risk_block_a": 0,
+          "risk_block_b": 0
+        },
+        {
+          "id": "C2",
+          "lat": 2,
+          "lon": 1,
+          "alt": 6,
+          "connections": [
+            {
+              "to": "C1",
+              "distance": 10
+            },
+            {
+              "to": "C3",
+              "distance": 10
+            }
+          ],
+          "number": 12,
+          "floor": "C",
+          "type": "Disponible",
+          "risk_block_a": 1,
+          "risk_block_b": 0
+        },
+        {
+          "id": "C3",
+          "lat": 2,
+          "lon": 2,
+          "alt": 6,
+          "connections": [
+            {
+              "to": "C2",
+              "distance": 10
+            },
+            {
+              "to": "C4",
+              "distance": 10
+            },
+            {
+              "to": "B3",
+              "distance": 15
+            },
+            {
+              "to": "D3",
+              "distance": 15
+            }
+          ],
+          "number": 13,
+          "floor": "C",
+          "type": "Escalera",
+          "risk_block_a": 0,
+          "risk_block_b": 0
+        },
+        {
+          "id": "C4",
+          "lat": 2,
+          "lon": 3,
+          "alt": 6,
+          "connections": [
+            {
+              "to": "C3",
+              "distance": 10
+            },
+            {
+              "to": "C5",
+              "distance": 10
+            }
+          ],
+          "number": 14,
+          "floor": "C",
+          "type": "Disponible",
+          "risk_block_a": 1,
+          "risk_block_b": 0
+        },
+        {
+          "id": "C5",
+          "lat": 2,
+          "lon": 4,
+          "alt": 6,
+          "connections": [
+            {
+              "to": "C4",
+              "distance": 10
+            }
+          ],
+          "number": 15,
+          "floor": "C",
+          "type": "Escalera",
+          "risk_block_a": 0,
+          "risk_block_b": 0
+        },
+        {
+          "id": "D1",
+          "lat": 3,
+          "lon": 0,
+          "alt": 9,
+          "connections": [
+            {
+              "to": "D2",
+              "distance": 10
+            }
+          ],
+          "number": 16,
+          "floor": "D",
+          "type": "Salida",
+          "risk_block_a": 1,
+          "risk_block_b": 0
+        },
+        {
+          "id": "D2",
+          "lat": 3,
+          "lon": 1,
+          "alt": 9,
+          "connections": [
+            {
+              "to": "D1",
+              "distance": 10
+            },
+            {
+              "to": "D3",
+              "distance": 10
+            }
+          ],
+          "number": 17,
+          "floor": "D",
+          "type": "Disponible",
+          "risk_block_a": 0,
+          "risk_block_b": 1
+        },
+        {
+          "id": "D3",
+          "lat": 3,
+          "lon": 2,
+          "alt": 9,
+          "connections": [
+            {
+              "to": "D2",
+              "distance": 10
+            },
+            {
+              "to": "D4",
+              "distance": 10
+            },
+            {
+              "to": "C3",
+              "distance": 15
+            }
+          ],
+          "number": 18,
+          "floor": "D",
+          "type": "Escalera",
+          "risk_block_a": 1,
+          "risk_block_b": 0
+        },
+        {
+          "id": "D4",
+          "lat": 3,
+          "lon": 3,
+          "alt": 9,
+          "connections": [
+            {
+              "to": "D3",
+              "distance": 10
+            },
+            {
+              "to": "D5",
+              "distance": 10
+            }
+          ],
+          "number": 19,
+          "floor": "D",
+          "type": "Disponible",
+          "risk_block_a": 0,
+          "risk_block_b": 1
+        },
+        {
+          "id": "D5",
+          "lat": 3,
+          "lon": 4,
+          "alt": 9,
+          "connections": [
+            {
+              "to": "D4",
+              "distance": 10
+            }
+          ],
+          "number": 20,
+          "floor": "D",
+          "type": "Salida",
+          "risk_block_a": 1,
+          "risk_block_b": 0
+        }
+      ]
+    }
+  ]
+}

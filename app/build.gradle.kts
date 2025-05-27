@@ -113,4 +113,7 @@ dependencies {
     //Crashlytics
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.crashlytics)
+
+    implementation ("com.google.android.gms:play-services-location:21.3.0")
+    implementation ("com.google.accompanist:accompanist-permissions:0.37.3")
 }
