@@ -2,7 +2,6 @@ package com.angelotacoj.apprutaoptimaescape.core.presentation.ui
 
 import android.Manifest
 import android.annotation.SuppressLint
-import android.content.pm.PackageManager
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
@@ -23,37 +22,27 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import androidx.core.content.ContextCompat
 import androidx.navigation.NavController
-import com.angelotacoj.apprutaoptimaescape.core.domain.algorithms.AStar
 import com.angelotacoj.apprutaoptimaescape.core.domain.algorithms.AntColony
 import com.angelotacoj.apprutaoptimaescape.core.domain.algorithms.BFS
-import com.angelotacoj.apprutaoptimaescape.core.domain.algorithms.Dijkstra
 import com.angelotacoj.apprutaoptimaescape.core.domain.algorithms.QLearning
 import com.angelotacoj.apprutaoptimaescape.features.location.presentation.LocationViewModel
+import com.angelotacoj.apprutaoptimaescape.features.map_selector.presentation.MapsViewModel
 import com.angelotacoj.apprutaoptimaescape.features.map_view.presentation.GraphViewIsometric
 import com.angelotacoj.apprutaoptimaescape.features.map_view.presentation.projectIsometric
-import com.angelotacoj.apprutaoptimaescape.features.map_selector.presentation.MapsViewModel
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
-import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
-import com.google.accompanist.permissions.rememberPermissionState
-import com.google.accompanist.permissions.shouldShowRationale
-import org.koin.androidx.compose.getViewModel
+import org.koin.androidx.compose.koinViewModel
 import kotlin.math.cos
 import kotlin.math.pow
 
-@SuppressLint("LogNotTimber")
 @OptIn(ExperimentalPermissionsApi::class)
+@SuppressLint("LogNotTimber")
 @RequiresApi(Build.VERSION_CODES.S)
 @Composable
 fun PathResultScreen(
@@ -62,8 +51,8 @@ fun PathResultScreen(
     paddingValues: PaddingValues,
     navController: NavController,
 ) {
-    val mapVm: MapsViewModel = getViewModel()
-    val locVm: LocationViewModel = getViewModel()
+    val mapVm: MapsViewModel = koinViewModel()
+    val locVm: LocationViewModel = koinViewModel()
     val graphState    by mapVm.maps.collectAsState()
     val locationState by locVm.location.collectAsState()
 
@@ -193,7 +182,7 @@ fun PathResultScreen(
         // --- BOTÓN AVANZAR / FINALIZAR ---
         Button(
             onClick = {
-                if (!isAtEnd) step++ else navController.popBackStack()
+                if (!isAtEnd) step++ else navController.navigate("metrics_screen")
             },
             Modifier
                 .fillMaxWidth()

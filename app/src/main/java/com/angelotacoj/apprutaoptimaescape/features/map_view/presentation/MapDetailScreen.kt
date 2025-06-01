@@ -15,12 +15,12 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.angelotacoj.apprutaoptimaescape.features.map_selector.presentation.MapsViewModel
-import org.koin.androidx.compose.getViewModel
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun MapDetailScreen(mapId: String, paddingValues: PaddingValues, onContinue: () -> Unit) {
     println("mapId is $mapId")
-    val viewModel: MapsViewModel = getViewModel()
+    val viewModel: MapsViewModel = koinViewModel()
     val mapsState = viewModel.maps.collectAsState()
 
     LaunchedEffect(Unit) {
