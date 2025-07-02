@@ -48,6 +48,7 @@ import kotlin.math.pow
 fun PathResultScreen(
     mapId: String,
     algorithm: String,
+    selectedNodeId: String,
     paddingValues: PaddingValues,
     navController: NavController,
 ) {
@@ -91,6 +92,7 @@ fun PathResultScreen(
 
     // 2) Mientras no tengamos grafo O ubicación, mensaje
     val graph    = graphState.find { it.id == mapId }
+    val selectedNode = graph?.nodes?.find { it.id == selectedNodeId }
     val location = locationState
     if (graph == null || location == null) {
         Box(Modifier
@@ -136,27 +138,17 @@ fun PathResultScreen(
     val currentNode = path.getOrNull(step) ?: nearestGpsNode
     val nextNode    = path.getOrNull(step + 1)
 
-    Column(Modifier
+    Column(
+        modifier = Modifier
         .fillMaxSize()
-        .padding(paddingValues)) {
-        // --- DEBUG ---
-/*        Column(Modifier
-            .fillMaxWidth()
-            .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.5f))
-            .padding(16.dp)) {
-            Text("GPS real: %.5f, %.5f".format(location.latitude, location.longitude))
-            Text("Local (m): x=%.1f, y=%.1f".format(gx, gy))
-            val displayNode = nextNode ?: "Fin de ruta"
-            Text("Nodo cercano (GPS): ${displayNode}")
-            Text("Inicio ruta: ${path.firstOrNull() ?: nearestGpsNode}")
-        }*/
-
+        .padding(paddingValues)
+    ) {
         // --- MAPA ---
         Box(Modifier.weight(1f)) {
             GraphViewIsometric(
                 graph           = graph,
                 pathToHighlight = path,
-                currentStep     = step
+                //currentStep     = step
             )
         }
 
