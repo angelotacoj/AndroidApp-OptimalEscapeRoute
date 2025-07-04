@@ -25,8 +25,13 @@ fun NavGraph(
     navController: NavHostController,
     paddingValues: PaddingValues
 ) {
-    NavHost(navController, startDestination = "mainScreen", modifier = Modifier.padding(paddingValues)) {
-        composable("mainScreen"){
+    NavHost(
+        navController = navController,
+        startDestination = "main_screen",
+        modifier = Modifier
+            .padding(paddingValues)
+    ) {
+        composable("main_screen"){
             Scaffold(
                 topBar = {
                     AppTopBar(
@@ -37,11 +42,13 @@ fun NavGraph(
                 }
             ) { innerPadding ->
                 MainScreen(
-                    modifier = Modifier.padding(innerPadding),
+                    modifier = Modifier
+                        .padding(innerPadding),
                     navController = navController
                 )
             }
         }
+
         composable("reports_screen"){
             Scaffold(
                 topBar = {
@@ -53,10 +60,12 @@ fun NavGraph(
                 }
             ) { innerPadding ->
                 ReportsScreen(
-                    modifier = Modifier.padding(innerPadding)
+                    modifier = Modifier
+                        .padding(innerPadding)
                 )
             }
         }
+
         composable("mapSelection") {
             Scaffold(
                 topBar = {
@@ -68,7 +77,8 @@ fun NavGraph(
                 }
             ) { innerPadding ->
                 MapSelectionScreen(
-                    modifier = Modifier.padding(innerPadding),
+                    modifier = Modifier
+                        .padding(innerPadding),
                     paddingValues = paddingValues,
                     onMapSelected = { selectedMap ->
                         navController.navigate("mapDetail/${selectedMap.id}")
@@ -76,6 +86,7 @@ fun NavGraph(
                 )
             }
         }
+
         composable("mapDetail/{mapId}") { backStackEntry ->
             val mapId = backStackEntry.arguments?.getString("mapId")
             Scaffold(
@@ -91,40 +102,45 @@ fun NavGraph(
                     MapDetailScreen(
                         mapId = it,
                         paddingValues = innerPadding,
-                        onContinue = {
-                            navController.navigate("algorithmSelection/$it")
+                        onContinue = { selectedNodeId ->
+                            navController.navigate("algorithmSelection/$it/${selectedNodeId}")
                         }
                     )
                 } ?: Text("Mapa no encontrado")
             }
         }
-        composable("algorithmSelection/{mapId}") { back ->
+
+        composable("algorithmSelection/{mapId}/{selectedNodeId}") { back ->
             val mapId = back.arguments!!.getString("mapId")!!
+            val selectedNodeId = back.arguments!!.getString("selectedNodeId")
             Scaffold(
                 topBar = { AppTopBar("Elegir Algoritmo", true, navController) }
             ) { inner ->
                 AlgorithmSelectionScreen(
-                    mapId = mapId,
                     paddingValues = inner
-                ) { it ->
-                    navController.navigate("pathResult/$mapId/$it")
+                ) { algorithmSelected ->
+                    navController.navigate("pathResult/$mapId/$algorithmSelected/$selectedNodeId")
                 }
             }
         }
-        composable("pathResult/{mapId}/{algorithm}") { back ->
+
+        composable("pathResult/{mapId}/{algorithmSelected}/{selectedNodeId}") { back ->
             val mapId = back.arguments!!.getString("mapId")!!
-            val algorithm = back.arguments!!.getString("algorithm")!!
+            val algorithm = back.arguments!!.getString("algorithmSelected")!!
+            val selectedNode = back.arguments!!.getString("selectedNodeId")
             Scaffold(
                 topBar = { AppTopBar("Resultado de Ruta", true, navController) }
             ) { inner ->
                 PathResultScreen(
                     mapId = mapId,
                     algorithm = algorithm,
+                    selectedNodeId = selectedNode.toString(),
                     paddingValues = inner,
-                    navController = navController
+                    navController = navController,
                 )
             }
         }
+
         composable("metrics_screen"){
             Scaffold(
                 topBar = {

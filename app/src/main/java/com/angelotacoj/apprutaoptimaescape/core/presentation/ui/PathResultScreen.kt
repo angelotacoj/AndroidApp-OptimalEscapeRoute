@@ -30,6 +30,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.angelotacoj.apprutaoptimaescape.core.domain.algorithms.AntColony
 import com.angelotacoj.apprutaoptimaescape.core.domain.algorithms.BFS
+import com.angelotacoj.apprutaoptimaescape.core.domain.algorithms.Dijkstra
 import com.angelotacoj.apprutaoptimaescape.core.domain.algorithms.QLearning
 import com.angelotacoj.apprutaoptimaescape.features.location.presentation.LocationViewModel
 import com.angelotacoj.apprutaoptimaescape.features.map_selector.presentation.MapsViewModel
@@ -77,22 +78,19 @@ fun PathResultScreen(
             Manifest.permission.ACCESS_COARSE_LOCATION
         )
     )
+
     LaunchedEffect(Unit) {
         permissionState.launchMultiplePermissionRequest()
     }
+
     LaunchedEffect(permissionState.allPermissionsGranted) {
-        if (permissionState.allPermissionsGranted) {
-            Log.d("PathResult", "✅ Permisos OK, arrancando location")
-            locVm.startLocationUpdates()
-        } else {
-            Log.d("PathResult", "⛔️ Faltan permisos de ubicación")
-        }
+        if (permissionState.allPermissionsGranted) locVm.startLocationUpdates()
         if (graphState.isEmpty()) mapVm.loadMaps()
     }
 
     // 2) Mientras no tengamos grafo O ubicación, mensaje
     val graph    = graphState.find { it.id == mapId }
-    val selectedNode = graph?.nodes?.find { it.id == selectedNodeId }
+    //val selectedNode = graph?.nodes?.find { it.id == selectedNodeId }
     val location = locationState
     if (graph == null || location == null) {
         Box(Modifier
@@ -123,19 +121,18 @@ fun PathResultScreen(
 
     // 6) Calcula ruta con el algoritmo elegido
     val exits = graph.nodes.filter { it.type == "Salida" }.map { it.id }
-    val path = remember(graph, algorithm, nearestGpsNode) {
+    val path = remember(graph, algorithm, selectedNodeId) {
         when (algorithm) {
-            "Ant Colony" -> AntColony.findPath(graph, nearestGpsNode, exits)
-            "QLearning"  -> QLearning.findPath(graph, nearestGpsNode, exits)
-            else         -> BFS.findPath(graph, nearestGpsNode, exits)
+            "Dijkstra" -> Dijkstra.findPath(graph, selectedNodeId, exits)
+            "QLearning"  -> QLearning.findPath(graph, selectedNodeId, exits)
+            else         -> BFS.findPath(graph, selectedNodeId, exits)
         }
     }
 
-// 6) Paso actual (sobre la lista `path`)
+    // 6) Paso actual (sobre la lista `path`)
     var step by remember { mutableIntStateOf(0) }
     val isAtEnd = step >= path.lastIndex
-    // currentNode = path[step], nextNode = path[step+1]
-    val currentNode = path.getOrNull(step) ?: nearestGpsNode
+    val currentNode = path.getOrNull(step) ?: selectedNodeId
     val nextNode    = path.getOrNull(step + 1)
 
     Column(
@@ -148,7 +145,8 @@ fun PathResultScreen(
             GraphViewIsometric(
                 graph           = graph,
                 pathToHighlight = path,
-                //currentStep     = step
+                startNode = null,
+                onStartNodeSelected = {}
             )
         }
 

@@ -25,29 +25,28 @@ import com.angelotacoj.apprutaoptimaescape.R
 
 @Composable
 fun AlgorithmSelectionScreen(
-    mapId: String,
     paddingValues: PaddingValues,
     onAlgorithmSelected: (String) -> Unit
 ) {
-    //val algorithms = listOf("Dijkstra", "A*", "BFS", "DFS")
+    //val algorithms = listOf("Ant Colony", "A*", "BFS", "DFS")
     val algorithms = listOf(
-        "Ant Colony",
+        "Dijkstra",
         "QLearning",
     )
     LazyColumn(modifier = Modifier.padding(paddingValues)) {
-        items(algorithms) { it ->
+        items(algorithms) { algorithm ->
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(8.dp)
-                    .clickable { onAlgorithmSelected(it) }
+                    .clickable { onAlgorithmSelected(algorithm) }
             ) {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ){
-                    Text(it, Modifier.padding(16.dp))
+                    Text(algorithm, Modifier.padding(16.dp))
                     Image(
                         modifier = Modifier.padding(16.dp).size(24.dp),
                         painter = painterResource(R.drawable.img_3),

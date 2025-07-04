@@ -41,174 +41,23 @@ fun projectIsometric(x: Float, y: Float, z: Float): Offset {
     return Offset(isoX, isoY)
 }
 
-/*
-@Composable
-fun GraphViewIsometric(
-    graph: Graph,
-    pathToHighlight: List<String> = emptyList(),
-    currentStep: Int = -1,
-    modifier: Modifier = Modifier
-) {
-    var selectedNode by remember { mutableStateOf<Node?>(null) }
-    var scale by remember { mutableStateOf(1f) }
-    var offset by remember { mutableStateOf(Offset.Zero) }
-
-    // Proyección isométrica de cada nodo
-    val nodePositions = remember(graph) {
-        graph.nodes.associate { node ->
-            node.id to projectIsometric(
-                x = node.lon.toFloat(),
-                y = node.lat.toFloat(),
-                z = node.alt.toFloat()
-            )
-        }
-    }
-
-    // Calcula bounds del grafo para centrar
-    val bounds = remember(nodePositions) {
-        nodePositions.values.fold<Offset, RectF?>(null) { acc, point ->
-            acc?.apply {
-                left   = min(left, point.x)
-                top    = min(top, point.y)
-                right  = max(right, point.x)
-                bottom = max(bottom, point.y)
-            } ?: RectF(point.x, point.y, point.x, point.y)
-        }
-    }
-
-    // Centrado automático (valores fijos de desplazamiento)
-    LaunchedEffect(bounds) {
-        bounds?.let {
-            val center = Offset(
-                x = -(it.left + it.right) / 2f + 400f,
-                y = -(it.top + it.bottom) / 2f + 800f
-            )
-            offset = center
-            scale = 1f
-        }
-    }
-
-    Box(
-        modifier = modifier
-            .pointerInput(graph) {
-                detectTransformGestures { _, pan, zoom, _ ->
-                    scale = (scale * zoom).coerceIn(0.3f, 5f)
-                    offset += pan
-                }
-            }
-    ) {
-        Canvas(
-            modifier = Modifier
-                .fillMaxSize()
-                .pointerInput(graph) {
-                    detectTapGestures { tap ->
-                        val p = (tap - offset) / scale
-                        val touched = nodePositions.entries
-                            .find { (_, pos) -> (p - pos).getDistance() <= 25f }
-                            ?.key
-                            ?.let { id -> graph.nodes.first { it.id == id } }
-                        selectedNode = touched
-                    }
-                }
-        ) {
-            with(drawContext.canvas) {
-                save()
-                translate(offset.x, offset.y)
-                scale(scale, scale)
-
-                // Paint para etiquetas
-                val paint = Paint().apply {
-                    color = android.graphics.Color.BLACK
-                    textSize = 28f
-                    isAntiAlias = true
-                }
-
-                // Precompute edges en ruta como sets bidireccionales
-                val pathEdges = pathToHighlight
-                    .windowed(2)
-                    .map { it.toSet() }
-
-                // 1) Dibuja aristas
-                graph.nodes.forEach { node ->
-                    val p1 = nodePositions[node.id] ?: return@forEach
-                    node.connections.forEach { c ->
-                        val p2 = nodePositions[c.to] ?: return@forEach
-                        val isInPath = pathEdges.contains(setOf(node.id, c.to))
-                        drawLine(
-                            color = if (isInPath) Color.Yellow else Color.Gray,
-                            start = p1,
-                            end = p2,
-                            strokeWidth = if (isInPath) 6f else 3f
-                        )
-                    }
-                }
-
-                // 2) Dibuja nodos (único pase, con resaltado)
-                graph.nodes.forEach { node ->
-                    val pos = nodePositions[node.id] ?: return@forEach
-                    val inPath      = node.id in pathToHighlight
-                    val isCurrent   = pathToHighlight.getOrNull(currentStep) == node.id
-                    val nodeColor   = when {
-                        isCurrent -> Color.Magenta
-                        inPath    -> Color.Yellow
-                        else      -> when (node.alt) {
-                            1 -> Color(0xFF2196F3)
-                            2 -> Color(0xFF4CAF50)
-                            3 -> Color(0xFFFFC107)
-                            4 -> Color(0xFFF44336)
-                            5 -> Color(0xFF9C27B0)
-                            6 -> Color(0xFFFF9800)
-                            7 -> Color(0xFF3F51B5)
-                            8 -> Color(0xFF009688)
-                            9 -> Color(0xFFE91E63)
-                            else -> Color.LightGray
-                        }
-                    }
-                    drawCircle(nodeColor, radius = 20f, center = pos, style = Stroke(width = 3f))
-                    drawCircle(nodeColor.copy(alpha = 0.5f), radius = 15f, center = pos, style = Fill)
-                    nativeCanvas.drawText(node.id, pos.x + 24f, pos.y - 24f, paint)
-                }
-
-                restore()
-            }
-        }
-
-        // Tooltip al seleccionar nodo
-        selectedNode?.let { node ->
-            Surface(
-                modifier = Modifier
-                    .align(Alignment.BottomCenter)
-                    .padding(16.dp),
-                tonalElevation = 8.dp,
-                shape = MaterialTheme.shapes.medium
-            ) {
-                Column(modifier = Modifier.padding(16.dp)) {
-                    Text("Nodo seleccionado", style = MaterialTheme.typography.titleMedium)
-                    Spacer(modifier = Modifier.height(8.dp))
-                    Text("ID: ${node.id}", style = MaterialTheme.typography.bodyLarge)
-                    Text("Lat: ${node.lat}, Lon: ${node.lon}", style = MaterialTheme.typography.bodyLarge)
-                    Text("Alt: ${node.alt}", style = MaterialTheme.typography.bodyLarge)
-                    Spacer(modifier = Modifier.height(8.dp))
-                    Button(onClick = { selectedNode = null }) {
-                        Text("Cerrar")
-                    }
-                }
-            }
-        }
-    }
-}*/
-
 @Composable
 fun GraphViewIsometric(
     modifier: Modifier = Modifier,
     graph: Graph,
     pathToHighlight: List<String> = emptyList(),
+    startNode: Node?,
+    onStartNodeSelected: (Node) -> Unit
 ) {
+
     var selectedNode by remember { mutableStateOf<Node?>(null) }
-    var startNode by remember { mutableStateOf<Node?>(null) }  // Nodo inicial
     var currentPath by remember { mutableStateOf<List<Node>>(emptyList()) }  // Recorrido actual
     var scale by remember { mutableStateOf(1f) }
     var offset by remember { mutableStateOf(Offset.Zero) }
+
+    LaunchedEffect(selectedNode) {
+        println("selectedNode cambió a: $selectedNode")
+    }
 
     // Proyección isométrica de cada nodo
     val nodePositions = remember(graph) {
@@ -258,14 +107,12 @@ fun GraphViewIsometric(
                         .find { (_, pos) -> (p - pos).getDistance() <= 25f }
                         ?.key
                         ?.let { id -> graph.nodes.first { it.id == id } }
-                    if (startNode == null) {
-                        // Si no hay nodo inicial, lo seleccionamos
-                        startNode = touched
-                    } else {
-                        // Si ya hay nodo inicial, agregamos a la lista de recorrido
-                        touched?.let { currentPath = currentPath + it }
+
+                    if (startNode == null && touched != null) {
+                        selectedNode = touched
+                        println("selectedNode: $selectedNode")
+                        onStartNodeSelected(touched)
                     }
-                    selectedNode = touched
                 }
             }
     ) {
@@ -279,7 +126,12 @@ fun GraphViewIsometric(
                             .find { (_, pos) -> (p - pos).getDistance() <= 25f }
                             ?.key
                             ?.let { id -> graph.nodes.first { it.id == id } }
-                        selectedNode = touched
+                        /*selectedNode = touched*/
+                        if (startNode == null && touched != null) {
+                            selectedNode = touched
+                            println("selectedNode 2: $selectedNode")
+                            onStartNodeSelected(touched)
+                        }
                     }
                 }
         ) {
@@ -319,10 +171,9 @@ fun GraphViewIsometric(
                 graph.nodes.forEach { node ->
                     val pos = nodePositions[node.id] ?: return@forEach
                     val nodeColor = when {
-                        selectedNode == node -> Color.Magenta    // Nodo seleccionado en color Magenta
-                        startNode == node -> Color.Cyan    // Nodo inicial en color Cyan
-                        currentPath.contains(node) -> Color.Green    // Nodo en el recorrido en color Verde
-                        else -> Color.Gray    // Nodos restantes en gris
+                        startNode == null && selectedNode == node -> Color.Magenta
+                        startNode == node -> Color.Cyan
+                        else -> Color.Gray
                     }
                     drawCircle(nodeColor, radius = 20f, center = pos, style = Stroke(width = 3f))
                     drawCircle(nodeColor.copy(alpha = 0.5f), radius = 15f, center = pos, style = Fill)
@@ -332,7 +183,6 @@ fun GraphViewIsometric(
             }
         }
 
-        // Tooltip al seleccionar nodo
         selectedNode?.let { node ->
             Surface(
                 modifier = Modifier
