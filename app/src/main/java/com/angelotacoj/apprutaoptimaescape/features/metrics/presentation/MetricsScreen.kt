@@ -104,7 +104,7 @@ fun MetricsScreen(
     ){
         Button(
             onClick = {
-                navController.navigate("mainScreen")
+                navController.navigate("main_screen")
             },
             modifier = Modifier
                 .fillMaxWidth()

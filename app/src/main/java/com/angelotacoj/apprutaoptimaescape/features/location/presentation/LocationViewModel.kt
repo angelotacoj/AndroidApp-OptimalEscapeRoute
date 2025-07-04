@@ -23,46 +23,55 @@ class LocationViewModel(
     private val _location = MutableStateFlow<Location?>(null)
     val location: StateFlow<Location?> = _location
 
+    private val locationCallback = object : LocationCallback() {
+        override fun onLocationResult(result: LocationResult) {
+            Log.d("LocationVM", "onLocationResult: $result")
+            result.lastLocation?.let { loc ->
+                Log.d("LocationVM", "Ubicación recibida: lat=${loc.latitude}, lon=${loc.longitude}")
+                _location.value = loc
+            }
+        }
+
+        override fun onLocationAvailability(availability: LocationAvailability) {
+            Log.d("LocationVM", "onLocationAvailability: $availability")
+        }
+    }
+
+    private var isRequestingLocation = false
+
     @SuppressLint("MissingPermission")
     fun startLocationUpdates() {
-        Log.d("LocationVM", "startLocationUpdates() llamado")
+        if (isRequestingLocation) {
+            Log.d("LocationVM", "startLocationUpdates() ignorado porque ya está activo")
+            return
+        }
+        isRequestingLocation = true
+        Log.d("LocationVM", "startLocationUpdates() lanzando request")
 
         val request = com.google.android.gms.location.LocationRequest.Builder(
             Priority.PRIORITY_HIGH_ACCURACY,
             1_000L
-        )
-            .setMinUpdateDistanceMeters(0f)
-            .build()
-
-        Log.d("LocationVM", "LocationRequest: $request")
-
-        val callback = object : LocationCallback() {
-            override fun onLocationResult(result: LocationResult) {
-                Log.d("LocationVM", "onLocationResult: $result")
-                result.lastLocation?.let { loc ->
-                    Log.d("LocationVM", "Ubicación recibida: lat=${loc.latitude}, lon=${loc.longitude}")
-                    _location.value = loc
-                }
-            }
-
-            override fun onLocationAvailability(availability: LocationAvailability) {
-                Log.d("LocationVM", "onLocationAvailability: $availability")
-            }
-        }
+        ).setMinUpdateDistanceMeters(0f).build()
 
         fusedClient.requestLocationUpdates(
             request,
-            callback,
+            locationCallback,
             Looper.getMainLooper()
         ).addOnSuccessListener {
-            Log.d("LocationVM", "requestLocationUpdates: éxito")
+            Log.d("LocationVM", "requestLocationUpdates éxito")
         }.addOnFailureListener { ex ->
-            Log.e("LocationVM", "requestLocationUpdates: fallo", ex)
+            Log.e("LocationVM", "requestLocationUpdates fallo", ex)
+            isRequestingLocation = false
         }
     }
 
-    fun stopLocationUpdates(callback: LocationCallback) {
-        fusedClient.removeLocationUpdates(callback)
-        Log.d("LocationVM", "stopLocationUpdates() llamado")
+    fun stopLocationUpdates() {
+        if (!isRequestingLocation) {
+            Log.d("LocationVM", "stopLocationUpdates() ignorado porque no había request activo")
+            return
+        }
+        fusedClient.removeLocationUpdates(locationCallback)
+        isRequestingLocation = false
+        Log.d("LocationVM", "stopLocationUpdates() completado")
     }
 }

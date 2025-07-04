@@ -58,19 +58,6 @@ fun PathResultScreen(
     val graphState    by mapVm.maps.collectAsState()
     val locationState by locVm.location.collectAsState()
 
-    // **Punto de referencia GPS** (esquina conocida de tu plano)
-    val REF_LAT = 19.43254
-    val REF_LON = -99.13327
-    // Conversión aproximada grados→metros en latitud/longitud
-    val METERS_PER_DEG_LAT = 111_320f
-    val METERS_PER_DEG_LON = cos(Math.toRadians(REF_LAT)) * 111_320f
-
-    fun gpsToLocal(lon: Double, lat: Double): Pair<Float, Float> {
-        val dx = ((lon - REF_LON) * METERS_PER_DEG_LON).toFloat()
-        val dy = ((lat - REF_LAT) * METERS_PER_DEG_LAT).toFloat()
-        return dx to dy
-    }
-
     // 1) Pedir permisos de ubicación
     val permissionState = rememberMultiplePermissionsState(
         listOf(
@@ -88,9 +75,15 @@ fun PathResultScreen(
         if (graphState.isEmpty()) mapVm.loadMaps()
     }
 
+    LaunchedEffect(key1 = true) {
+        println("Entre a la pantalla desde PathResultScreen")
+        println("===== startNode es: $selectedNodeId")
+        println("===== selectedNode es: $selectedNodeId")
+    }
+
     // 2) Mientras no tengamos grafo O ubicación, mensaje
     val graph    = graphState.find { it.id == mapId }
-    //val selectedNode = graph?.nodes?.find { it.id == selectedNodeId }
+    val selectedNode = graph?.nodes?.find { it.id == selectedNodeId }
     val location = locationState
     if (graph == null || location == null) {
         Box(Modifier
@@ -107,17 +100,6 @@ fun PathResultScreen(
         }
         return
     }
-
-    // 3) Muestra GPS bruto y convierte a coordenadas locales
-    val (gx, gy) = gpsToLocal(location.longitude, location.latitude)
-    // 4) Proyecta isométrico para visualizar
-    val userOffset = projectIsometric(x = gx, y = gy, z = 0f)
-
-    // 5) Encuentra nodo más cercano (euclídea en isométrico)
-    val nearestGpsNode = graph.nodes.minByOrNull { node ->
-        val p = projectIsometric(node.lon.toFloat(), node.lat.toFloat(), node.alt.toFloat())
-        (p.x - userOffset.x).pow(2) + (p.y - userOffset.y).pow(2)
-    }!!.id
 
     // 6) Calcula ruta con el algoritmo elegido
     val exits = graph.nodes.filter { it.type == "Salida" }.map { it.id }
@@ -145,7 +127,7 @@ fun PathResultScreen(
             GraphViewIsometric(
                 graph           = graph,
                 pathToHighlight = path,
-                startNode = null,
+                startNode = graph.nodes.firstOrNull { it.id == currentNode },
                 onStartNodeSelected = {}
             )
         }
@@ -154,7 +136,7 @@ fun PathResultScreen(
 
         // --- INSTRUCCIONES DINÁMICAS ---
         Column(
-            Modifier
+            modifier = Modifier
                 .fillMaxWidth()
                 .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.5f))
                 .padding(16.dp)
@@ -172,7 +154,12 @@ fun PathResultScreen(
         // --- BOTÓN AVANZAR / FINALIZAR ---
         Button(
             onClick = {
-                if (!isAtEnd) step++ else navController.navigate("metrics_screen")
+                if (!isAtEnd){
+                    step++
+                } else {
+                    locVm.stopLocationUpdates()
+                    navController.navigate("metrics_screen")
+                }
             },
             Modifier
                 .fillMaxWidth()

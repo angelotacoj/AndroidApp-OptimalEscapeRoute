@@ -59,6 +59,12 @@ fun GraphViewIsometric(
         println("selectedNode cambió a: $selectedNode")
     }
 
+    LaunchedEffect(key1 = true) {
+        println("Entre a la pantalla desde PathResultScreen")
+        println("===== startNode es: $startNode")
+        println("===== selectedNode es: $selectedNode")
+    }
+
     // Proyección isométrica de cada nodo
     val nodePositions = remember(graph) {
         graph.nodes.associate { node ->
@@ -159,7 +165,7 @@ fun GraphViewIsometric(
                         val p2 = nodePositions[c.to] ?: return@forEach
                         val isInPath = pathEdges.contains(setOf(node.id, c.to))
                         drawLine(
-                            color = if (isInPath) Color.Yellow else Color.Gray,
+                            color = if (isInPath) Color.Red else Color.Gray,
                             start = p1,
                             end = p2,
                             strokeWidth = if (isInPath) 6f else 3f
@@ -171,7 +177,7 @@ fun GraphViewIsometric(
                 graph.nodes.forEach { node ->
                     val pos = nodePositions[node.id] ?: return@forEach
                     val nodeColor = when {
-                        startNode == null && selectedNode == node -> Color.Magenta
+                        //startNode == null && selectedNode == node -> Color.Magenta
                         startNode == node -> Color.Cyan
                         else -> Color.Gray
                     }
