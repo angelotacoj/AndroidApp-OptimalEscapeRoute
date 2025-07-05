@@ -23,7 +23,12 @@ import com.angelotacoj.apprutaoptimaescape.features.map_selector.presentation.Ma
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun MapDetailScreen(mapId: String, paddingValues: PaddingValues, onContinue: (String) -> Unit) {
+fun MapDetailScreen(
+    modifier: Modifier = Modifier,
+    mapId: String,
+    paddingValues: PaddingValues,
+    onContinue: (String) -> Unit
+) {
 
     val viewModel: MapsViewModel = koinViewModel()
     val mapsState = viewModel.maps.collectAsState()
@@ -36,39 +41,42 @@ fun MapDetailScreen(mapId: String, paddingValues: PaddingValues, onContinue: (St
         }
     }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(paddingValues)
-    ) {
-        if (graph != null) {
-            GraphViewIsometric(
-                graph = graph,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(600.dp),
-                startNode = startNode,
-                onStartNodeSelected = { selected ->
-                    startNode = selected
-                    println("🚀 startNode seleccionado en padre: $selected")
-                }
-            )
-            Spacer(Modifier.weight(1f))
-            Button(
-                onClick = {
-                    startNode?.let {
-                        onContinue(it.id)
+    paddingValues?.let {
+        modifier
+    }?.let {
+        Column(
+            modifier = Modifier
+                .padding(paddingValues)
+        ) {
+            if (graph != null) {
+                GraphViewIsometric(
+                    graph = graph,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(600.dp),
+                    startNode = startNode,
+                    onStartNodeSelected = { selected ->
+                        startNode = selected
+                        println("🚀 startNode seleccionado en padre: $selected")
                     }
-                },
-                enabled = startNode != null,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp)
-            ) {
-                Text("Continuar")
+                )
+
+                Button(
+                    onClick = {
+                        startNode?.let {
+                            onContinue(it.id)
+                        }
+                    },
+                    enabled = startNode != null,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp)
+                ) {
+                    Text("Continuar")
+                }
+            } else {
+                Text(text = "Mapa no encontrado", modifier = Modifier.padding(16.dp))
             }
-        } else {
-            Text(text = "Mapa no encontrado", modifier = Modifier.padding(16.dp))
         }
     }
 }

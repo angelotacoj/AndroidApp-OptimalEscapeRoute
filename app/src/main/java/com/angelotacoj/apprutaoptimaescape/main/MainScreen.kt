@@ -35,7 +35,7 @@ fun MainScreen(
     ) {
         Image(
             painter = painterResource(R.drawable.img),
-            modifier = modifier.size(250.dp).align(Alignment.CenterHorizontally),
+            modifier = modifier.size(120.dp).align(Alignment.CenterHorizontally),
             contentDescription = "image_logo"
         )
         Spacer(

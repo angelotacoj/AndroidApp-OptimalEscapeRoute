@@ -2,6 +2,11 @@ package com.angelotacoj.apprutaoptimaescape.features.location.presentation
 
 import android.annotation.SuppressLint
 import android.app.Application
+import android.content.Context
+import android.hardware.Sensor
+import android.hardware.SensorEvent
+import android.hardware.SensorEventListener
+import android.hardware.SensorManager
 import android.location.Location
 import android.os.Looper
 import android.util.Log
@@ -22,6 +27,70 @@ class LocationViewModel(
 
     private val _location = MutableStateFlow<Location?>(null)
     val location: StateFlow<Location?> = _location
+
+    private var sensorManager: SensorManager? = null
+    private var accelerometerReading = FloatArray(3)
+    private var magnetometerReading  = FloatArray(3)
+
+    // public heading
+    private val _heading = MutableStateFlow<Float>(0f)
+    val heading: StateFlow<Float> = _heading
+
+    init {
+        sensorManager = app.getSystemService(Context.SENSOR_SERVICE) as SensorManager
+    }
+
+    private val sensorEventListener = object : SensorEventListener {
+        override fun onSensorChanged(event: SensorEvent) {
+            when (event.sensor.type) {
+                Sensor.TYPE_ACCELEROMETER -> {
+                    accelerometerReading = event.values.clone()
+                }
+                Sensor.TYPE_MAGNETIC_FIELD -> {
+                    magnetometerReading = event.values.clone()
+                }
+            }
+            updateOrientationAngles()
+        }
+
+        override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {
+            // opcional, no haría nada aquí
+        }
+    }
+
+    private fun updateOrientationAngles() {
+        val rotationMatrix = FloatArray(9)
+        val success = SensorManager.getRotationMatrix(
+            rotationMatrix, null,
+            accelerometerReading, magnetometerReading
+        )
+        if (success) {
+            val orientationAngles = FloatArray(3)
+            SensorManager.getOrientation(rotationMatrix, orientationAngles)
+            // azimuth en radianes, pasamos a grados
+            val azimuth = Math.toDegrees(orientationAngles[0].toDouble()).toFloat()
+            _heading.value = (azimuth + 360) % 360
+        }
+    }
+
+    fun startHeadingUpdates() {
+        sensorManager?.registerListener(
+            sensorEventListener,
+            sensorManager?.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),
+            SensorManager.SENSOR_DELAY_UI
+        )
+        sensorManager?.registerListener(
+            sensorEventListener,
+            sensorManager?.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD),
+            SensorManager.SENSOR_DELAY_UI
+        )
+        Log.d("LocationVM", "startHeadingUpdates()")
+    }
+
+    fun stopHeadingUpdates() {
+        sensorManager?.unregisterListener(sensorEventListener)
+        Log.d("LocationVM", "stopHeadingUpdates()")
+    }
 
     private val locationCallback = object : LocationCallback() {
         override fun onLocationResult(result: LocationResult) {

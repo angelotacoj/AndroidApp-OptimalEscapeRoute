@@ -100,8 +100,10 @@ fun NavGraph(
             ) { innerPadding ->
                 mapId?.let {
                     MapDetailScreen(
+                        modifier = Modifier
+                            .padding(innerPadding),
                         mapId = it,
-                        paddingValues = innerPadding,
+                        paddingValues = paddingValues,
                         onContinue = { selectedNodeId ->
                             navController.navigate("algorithmSelection/$it/${selectedNodeId}")
                         }

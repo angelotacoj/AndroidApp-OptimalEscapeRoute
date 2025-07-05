@@ -26,6 +26,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.angelotacoj.apprutaoptimaescape.core.domain.algorithms.AntColony
@@ -67,6 +68,11 @@ fun PathResultScreen(
     )
 
     LaunchedEffect(Unit) {
+        locVm.startLocationUpdates()
+        locVm.startHeadingUpdates()
+    }
+
+    LaunchedEffect(Unit) {
         permissionState.launchMultiplePermissionRequest()
     }
 
@@ -79,6 +85,12 @@ fun PathResultScreen(
         println("Entre a la pantalla desde PathResultScreen")
         println("===== startNode es: $selectedNodeId")
         println("===== selectedNode es: $selectedNodeId")
+    }
+
+    val heading by locVm.heading.collectAsState()
+
+    LaunchedEffect(heading) {
+        println("⎈ heading del teléfono: $heading grados")
     }
 
     // 2) Mientras no tengamos grafo O ubicación, mensaje
@@ -117,6 +129,33 @@ fun PathResultScreen(
     val currentNode = path.getOrNull(step) ?: selectedNodeId
     val nextNode    = path.getOrNull(step + 1)
 
+
+    // conviertes la ubicación del usuario a coordenadas locales
+    val (userX, userY) = gpsToLocal(location.longitude, location.latitude)
+
+    // conviertes el siguiente nodo a coordenadas locales
+    val nextNodeX = nextNode.let { graph.nodes.find { it.id == nextNode } }?.lon?.toFloat() ?: 0f
+    val nextNodeY = nextNode.let { graph.nodes.find { it.id == nextNode } }?.lat?.toFloat() ?: 0f
+
+    // proyectar a isométrico si quieres mantener consistencia visual
+    val nextNodeOffset = projectIsometric(nextNodeX, nextNodeY, 0f)
+
+    // cálculo de ángulo en radianes
+    val deltaX = nextNodeX - userX
+    val deltaY = nextNodeY - userY
+    val angleToNext = Math.toDegrees(kotlin.math.atan2(deltaY, deltaX).toDouble())
+
+    // diferencia con heading
+    val arrowRotation = ((angleToNext - locVm.heading.collectAsState().value + 360) % 360)
+
+    println("➡️ userX=$userX userY=$userY")
+    println("➡️ nextNodeX=$nextNodeX nextNodeY=$nextNodeY")
+    println("➡️ angleToNext=$angleToNext")
+    println("➡️ heading=${locVm.heading.collectAsState().value}")
+    println("➡️ arrowRotation=$arrowRotation")
+
+    val userOffset = Offset(400f, 800f)
+
     Column(
         modifier = Modifier
         .fillMaxSize()
@@ -128,7 +167,9 @@ fun PathResultScreen(
                 graph           = graph,
                 pathToHighlight = path,
                 startNode = graph.nodes.firstOrNull { it.id == currentNode },
-                onStartNodeSelected = {}
+                onStartNodeSelected = {},
+                arrowRotation   = arrowRotation.toFloat(),
+                arrowOrigin = userOffset
             )
         }
 
@@ -158,6 +199,7 @@ fun PathResultScreen(
                     step++
                 } else {
                     locVm.stopLocationUpdates()
+                    locVm.stopHeadingUpdates()
                     navController.navigate("metrics_screen")
                 }
             },
@@ -168,4 +210,15 @@ fun PathResultScreen(
             Text(if (!isAtEnd) "Siguiente paso" else "Finalizar")
         }
     }
+}
+
+fun gpsToLocal(lon: Double, lat: Double): Pair<Float, Float> {
+    val REF_LAT = 19.43254
+    val REF_LON = -99.13327
+    val METERS_PER_DEG_LAT = 111_320f
+    val METERS_PER_DEG_LON = kotlin.math.cos(Math.toRadians(REF_LAT)) * 111_320f
+
+    val dx = ((lon - REF_LON) * METERS_PER_DEG_LON).toFloat()
+    val dy = ((lat - REF_LAT) * METERS_PER_DEG_LAT).toFloat()
+    return dx to dy
 }

@@ -1,5 +1,7 @@
 package com.angelotacoj.apprutaoptimaescape.features.map_view.presentation
 
+import android.R.attr.startX
+import android.R.attr.startY
 import android.graphics.Paint
 import android.graphics.RectF
 import androidx.compose.foundation.Canvas
@@ -32,8 +34,10 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.dp
 import com.angelotacoj.apprutaoptimaescape.core.domain.graph.Graph
 import com.angelotacoj.apprutaoptimaescape.core.domain.graph.Node
+import kotlin.math.cos
 import kotlin.math.max
 import kotlin.math.min
+import kotlin.math.sin
 
 fun projectIsometric(x: Float, y: Float, z: Float): Offset {
     val isoX = (x - y) * 60f
@@ -47,11 +51,12 @@ fun GraphViewIsometric(
     graph: Graph,
     pathToHighlight: List<String> = emptyList(),
     startNode: Node?,
-    onStartNodeSelected: (Node) -> Unit
+    onStartNodeSelected: (Node) -> Unit,
+    arrowRotation: Float = 0f,
+    arrowOrigin: Offset? = null
 ) {
 
     var selectedNode by remember { mutableStateOf<Node?>(null) }
-    var currentPath by remember { mutableStateOf<List<Node>>(emptyList()) }  // Recorrido actual
     var scale by remember { mutableStateOf(1f) }
     var offset by remember { mutableStateOf(Offset.Zero) }
 
@@ -75,6 +80,8 @@ fun GraphViewIsometric(
             )
         }
     }
+
+    val localArrowOrigin = (arrowOrigin?.minus(offset))?.div(scale)
 
     // Calcula bounds del grafo para centrar
     val bounds = remember(nodePositions) {
@@ -183,6 +190,51 @@ fun GraphViewIsometric(
                     }
                     drawCircle(nodeColor, radius = 20f, center = pos, style = Stroke(width = 3f))
                     drawCircle(nodeColor.copy(alpha = 0.5f), radius = 15f, center = pos, style = Fill)
+                }
+
+                startNode?.let {
+                    arrowOrigin?.let { origin ->
+                        val localOrigin = (origin - offset) / scale
+
+                        val arrowLength = 120f
+                        val radians = Math.toRadians(arrowRotation.toDouble())
+                        val arrowEndX = localOrigin.x + cos(radians) * arrowLength
+                        val arrowEndY = localOrigin.y + sin(radians) * arrowLength
+                        val arrowEnd = Offset(arrowEndX.toFloat(), arrowEndY.toFloat())
+
+                        // Dibuja el cuerpo de la flecha
+                        drawLine(
+                            color = Color.Black,
+                            start = localOrigin,
+                            end = arrowEnd,
+                            strokeWidth = 16f
+                        )
+
+                        // tamaño de la cabeza de la flecha
+                        val headSize = 24f
+                        val angle = Math.PI / 6 // 30 grados de apertura de la cabeza
+
+                        val leftX = arrowEnd.x - headSize * cos(radians - angle).toFloat()
+                        val leftY = arrowEnd.y - headSize * sin(radians - angle).toFloat()
+                        val rightX = arrowEnd.x - headSize * cos(radians + angle).toFloat()
+                        val rightY = arrowEnd.y - headSize * sin(radians + angle).toFloat()
+
+                        // lado izquierdo de la cabeza de flecha
+                        drawLine(
+                            color = Color.Black,
+                            start = arrowEnd,
+                            end = Offset(leftX, leftY),
+                            strokeWidth = 16f
+                        )
+
+                        // lado derecho de la cabeza de flecha
+                        drawLine(
+                            color = Color.Black,
+                            start = arrowEnd,
+                            end = Offset(rightX, rightY),
+                            strokeWidth = 16f
+                        )
+                    }
                 }
 
                 restore()
